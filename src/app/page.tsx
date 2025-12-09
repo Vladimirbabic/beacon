@@ -172,30 +172,30 @@ function Frame({ className }: { className?: string }) {
 // Embedded Card Component for Zillow/Reels/LinkedIn showcase
 function EmbedCard({ type, address }: { type: "zillow" | "reels" | "linkedin"; address: string }) {
   return (
-    <div className="embed-card bg-[#2b2b2b] border border-[#484848] rounded-[20px] p-3 flex flex-col gap-3 w-full">
+    <div className="embed-card bg-[#2b2b2b] border border-[#484848] rounded-[16px] md:rounded-[20px] p-2 md:p-3 flex flex-col gap-2 md:gap-3 w-full">
       {/* Address Header */}
       <div className="px-2">
-        <p className="font-sans font-semibold text-[14px] tracking-[1px] uppercase text-white">{address.split(",")[0]},</p>
-        <p className="font-sans font-medium text-[14px] tracking-[1px] uppercase text-white/40">{address.split(",").slice(1).join(",")}</p>
+        <p className="font-sans font-semibold text-[12px] md:text-[14px] tracking-[1px] uppercase text-white">{address.split(",")[0]},</p>
+        <p className="font-sans font-medium text-[12px] md:text-[14px] tracking-[1px] uppercase text-white/40">{address.split(",").slice(1).join(",")}</p>
       </div>
 
       {/* Embed Preview */}
-      <div className="rounded-[12px] overflow-hidden bg-white">
+      <div className="rounded-[10px] md:rounded-[12px] overflow-hidden bg-white">
         {type === "zillow" && (
-          <img src="/images/zillow-listing.png" alt="Zillow Listing" className="w-full h-[290px] object-cover" />
+          <img src="/images/zillow-listing.png" alt="Zillow Listing" className="w-full h-[200px] md:h-[290px] object-cover" />
         )}
         {type === "reels" && (
-          <img src="/images/reels-embed.png" alt="Instagram Reels" className="w-full h-[450px] object-cover" />
+          <img src="/images/reels-embed.png" alt="Instagram Reels" className="w-full h-[320px] md:h-[450px] object-cover" />
         )}
         {type === "linkedin" && (
-          <img src="/images/linkedin-post.png" alt="LinkedIn Post" className="w-full h-[350px] object-cover" />
+          <img src="/images/linkedin-post.png" alt="LinkedIn Post" className="w-full h-[250px] md:h-[350px] object-cover" />
         )}
       </div>
 
       {/* Caption */}
-      <div className="flex flex-wrap gap-1 px-2 text-[20px] text-white">
+      <div className="flex flex-wrap gap-1 px-2 text-[14px] md:text-[20px] text-white">
         <span className="font-sans font-normal">Going viral on</span>
-        <img src={imgFrame} alt="Platform" className="w-6 h-6 mx-1" />
+        <img src={imgFrame} alt="Platform" className="w-5 h-5 md:w-6 md:h-6 mx-1" />
         <span className="font-sans font-normal">Zillow with</span>
         <span className="font-sans font-bold">3500 views</span>
         <span className="font-sans font-normal">and</span>
@@ -209,9 +209,17 @@ function EmbedCard({ type, address }: { type: "zillow" | "reels" | "linkedin"; a
 function HeroSection({ heroRef, cardsRef }: { heroRef: React.RefObject<HTMLDivElement | null>; cardsRef: React.RefObject<HTMLDivElement | null> }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
-  const cardWidth = 386;
-  const gap = 32;
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const cardWidth = isMobile ? 280 : 386;
+  const gap = isMobile ? 16 : 32;
   const totalWidth = propertyCards.length * (cardWidth + gap);
 
   // Duplicate cards for seamless loop
@@ -275,27 +283,27 @@ function HeroSection({ heroRef, cardsRef }: { heroRef: React.RefObject<HTMLDivEl
   return (
     <div ref={heroRef} className="w-full relative">
       {/* Left-aligned title and subtitle with inline arrows */}
-      <div className="flex flex-col gap-6 px-8 md:px-24 py-12 md:py-16 items-start text-left max-w-[1440px] mx-auto">
-        <h1 className="hero-title font-serif text-[40px] md:text-[64px] lg:text-[80px] text-[#2b2b2b] leading-tight tracking-[-1px] md:tracking-[-2.4px] max-w-[900px]">
+      <div className="flex flex-col gap-4 md:gap-6 px-4 sm:px-8 md:px-24 pt-8 md:pt-16 pb-6 md:pb-12 items-start text-left max-w-[1440px] mx-auto">
+        <h1 className="hero-title font-serif text-[32px] sm:text-[40px] md:text-[64px] lg:text-[80px] text-[#2b2b2b] leading-[1.1] tracking-[-1px] md:tracking-[-2.4px] max-w-[900px]">
           Our homes have been seen 235,000 buyers.
         </h1>
-        <div className="hero-subtitle flex flex-wrap items-center justify-between w-full gap-4 md:gap-6">
-          <span className="font-serif text-[28px] md:text-[40px] lg:text-[48px] text-[#2b2b2b] border-b-[3px] border-[#ff5825] px-2 pb-1">
+        <div className="hero-subtitle flex flex-col sm:flex-row flex-wrap items-start sm:items-center justify-between w-full gap-4 md:gap-6">
+          <span className="font-serif text-[20px] sm:text-[28px] md:text-[40px] lg:text-[48px] text-[#2b2b2b] border-b-[2px] md:border-b-[3px] border-[#ff5825] px-1 md:px-2 pb-1">
             And that was just in last 30 days.
           </span>
           {/* Navigation Arrows on right side */}
-          <div className="flex gap-3">
+          <div className="flex gap-2 md:gap-3">
             <button
               onClick={() => scroll('left')}
               className="hover:scale-110 transition-transform duration-200"
             >
-              <img src={imgArrowCircleRight} alt="Prev" className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rotate-180 cursor-pointer opacity-80 hover:opacity-100 transition-opacity" />
+              <img src={imgArrowCircleRight} alt="Prev" className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 rotate-180 cursor-pointer opacity-80 hover:opacity-100 transition-opacity" />
             </button>
             <button
               onClick={() => scroll('right')}
               className="hover:scale-110 transition-transform duration-200"
             >
-              <img src={imgArrowCircleRight1} alt="Next" className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 cursor-pointer opacity-80 hover:opacity-100 transition-opacity" />
+              <img src={imgArrowCircleRight1} alt="Next" className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 cursor-pointer opacity-80 hover:opacity-100 transition-opacity" />
             </button>
           </div>
         </div>
@@ -303,7 +311,7 @@ function HeroSection({ heroRef, cardsRef }: { heroRef: React.RefObject<HTMLDivEl
 
       {/* Full-width Endless Cards Carousel with GSAP */}
       <div
-        className="w-full pb-16 overflow-hidden"
+        className="w-full pb-8 md:pb-16 overflow-hidden"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -314,13 +322,14 @@ function HeroSection({ heroRef, cardsRef }: { heroRef: React.RefObject<HTMLDivEl
               (cardsRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
             }
           }}
-          className="flex pl-8 md:pl-24"
+          className="flex pl-4 sm:pl-8 md:pl-24"
           style={{ gap: `${gap}px` }}
         >
           {infiniteCards.map((card, index) => (
             <div
               key={index}
-              className="property-card relative w-[320px] md:w-[386px] h-[480px] md:h-[562px] rounded-[12px] overflow-hidden shrink-0 group cursor-pointer"
+              className="property-card relative rounded-[12px] overflow-hidden shrink-0 group cursor-pointer"
+              style={{ width: `${cardWidth}px`, height: isMobile ? '420px' : '562px' }}
             >
               <img src={card.image} alt="Property" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
               {/* Overlay gradient matching Figma design */}
@@ -331,15 +340,15 @@ function HeroSection({ heroRef, cardsRef }: { heroRef: React.RefObject<HTMLDivEl
                 }}
               />
               {/* Address at top */}
-              <div className="absolute top-0 left-0 right-0 p-5 text-white">
-                <p className="font-sans font-semibold text-[14px] md:text-[16px] tracking-[1px] uppercase">{card.address},</p>
-                <p className="font-sans font-medium text-[14px] md:text-[16px] tracking-[1px] uppercase opacity-60">{card.city}</p>
+              <div className="absolute top-0 left-0 right-0 p-4 md:p-5 text-white">
+                <p className="font-sans font-semibold text-[12px] md:text-[16px] tracking-[1px] uppercase">{card.address},</p>
+                <p className="font-sans font-medium text-[12px] md:text-[16px] tracking-[1px] uppercase opacity-60">{card.city}</p>
               </div>
               {/* Stats at bottom */}
-              <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
-                <div className="flex flex-wrap items-center gap-1 text-[16px] md:text-[20px]">
+              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 text-white">
+                <div className="flex flex-wrap items-center gap-1 text-[14px] md:text-[20px]">
                   <span className="font-sans font-normal">Going viral on</span>
-                  <img src={imgFrame} alt="Zillow" className="w-6 h-6 md:w-7 md:h-7 mx-1" />
+                  <img src={imgFrame} alt="Zillow" className="w-5 h-5 md:w-7 md:h-7 mx-1" />
                   <span className="font-sans font-normal">Zillow with</span>
                   <span className="font-sans font-bold">{card.views} views</span>
                   <span className="font-sans font-normal">and</span>
@@ -650,15 +659,15 @@ export default function Page() {
   return (
     <main className="bg-[#f4f1ea] min-h-screen w-full flex flex-col items-center overflow-x-hidden">
       {/* Header */}
-      <header className="w-full max-w-[1440px] px-8 md:px-16 py-4 flex items-center justify-between">
-        <div className="h-[60px] md:h-[78px] w-[180px] md:w-[252px] relative">
+      <header className="w-full max-w-[1440px] px-4 sm:px-8 md:px-16 py-3 md:py-4 flex items-center justify-between">
+        <div className="h-[50px] sm:h-[60px] md:h-[78px] w-[140px] sm:w-[180px] md:w-[252px] relative">
           <img alt="Logo" className="object-contain w-full h-full" src={imgQvrn6Gdeq84Zgkw0Rlji1} />
         </div>
-        <div className="flex gap-3 items-center">
-          <p className="font-sans font-semibold text-[#1b2826] text-[12px] md:text-[16px] tracking-[1.6px] uppercase leading-[24px]">
+        <div className="flex gap-2 md:gap-3 items-center">
+          <p className="font-sans font-semibold text-[#1b2826] text-[10px] sm:text-[12px] md:text-[16px] tracking-[1.6px] uppercase leading-[24px]">
             Powered by
           </p>
-          <div className="w-[40px] md:w-[57px] h-[14px] md:h-[18px] relative">
+          <div className="w-[32px] sm:w-[40px] md:w-[57px] h-[12px] sm:h-[14px] md:h-[18px] relative">
             <img alt="Union" className="w-full h-full" src={imgUnion1} />
           </div>
         </div>
@@ -669,23 +678,23 @@ export default function Page() {
 
 
       {/* Dark Section - Viral Stats */}
-      <section ref={darkSectionRef} className="bg-[#2b2b2b] w-full pt-16 md:pt-[120px] pb-0 px-8 md:px-[96px] text-white flex flex-col items-center relative">
-        <div className="dark-header text-center mb-12 md:mb-[80px] max-w-[1100px]">
-          <p className="font-sans font-medium text-[14px] md:text-[16px] tracking-[1px] uppercase opacity-40 mb-4">Performance</p>
-          <h2 className="font-serif text-[32px] md:text-[48px] lg:text-[56px] leading-[1.2]">
+      <section ref={darkSectionRef} className="bg-[#2b2b2b] w-full pt-12 md:pt-[120px] pb-0 px-4 sm:px-8 md:px-[96px] text-white flex flex-col items-center relative">
+        <div className="dark-header text-center mb-8 md:mb-[80px] max-w-[1100px] px-2">
+          <p className="font-sans font-medium text-[12px] md:text-[16px] tracking-[1px] uppercase opacity-40 mb-3 md:mb-4">Performance</p>
+          <h2 className="font-serif text-[24px] sm:text-[32px] md:text-[48px] lg:text-[56px] leading-[1.2]">
             Our Most Viral Open House on{" "}
-            <span className="border-b-[3px] border-[#444] pb-1">November 30th</span>{" "}
-            on <span className="border-b-[3px] border-[#444] pb-1">123 Main street</span>{" "}
-            had <span className="border-b-[3px] border-[#444] pb-1">32 Attendees</span>
+            <span className="border-b-[2px] md:border-b-[3px] border-[#444] pb-1">November 30th</span>{" "}
+            on <span className="border-b-[2px] md:border-b-[3px] border-[#444] pb-1">123 Main street</span>{" "}
+            had <span className="border-b-[2px] md:border-b-[3px] border-[#444] pb-1">32 Attendees</span>
           </h2>
         </div>
 
         <div className="flex flex-col lg:flex-row w-full max-w-[1248px] rounded-[12px] border border-[#484848] bg-[#2b2b2b] overflow-hidden">
           {/* Left Column - Social Media */}
-          <div className="left-stats flex-1 p-8 md:p-[48px] border-b lg:border-b-0 lg:border-r border-[#484848]">
-            <div className="text-center mb-8 md:mb-12">
-              <p className="font-sans font-medium text-[14px] md:text-[16px] tracking-[1px] uppercase opacity-40 mb-4">Social Media Views</p>
-              <p className="stat-number font-serif text-[64px] md:text-[96px] leading-none">260,000</p>
+          <div className="left-stats flex-1 p-5 sm:p-8 md:p-[48px] border-b lg:border-b-0 lg:border-r border-[#484848]">
+            <div className="text-center mb-6 md:mb-12">
+              <p className="font-sans font-medium text-[12px] md:text-[16px] tracking-[1px] uppercase opacity-40 mb-3 md:mb-4">Social Media Views</p>
+              <p className="stat-number font-serif text-[48px] sm:text-[64px] md:text-[96px] leading-none">260,000</p>
             </div>
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between py-2 border-b border-[#3f3f3f]">
@@ -724,10 +733,10 @@ export default function Page() {
           </div>
 
           {/* Right Column - Online Portals */}
-          <div className="right-stats flex-1 p-8 md:p-[48px]">
-            <div className="text-center mb-8 md:mb-12">
-              <p className="font-sans font-medium text-[14px] md:text-[16px] tracking-[1px] uppercase opacity-40 mb-4">Online Portals Views</p>
-              <p className="stat-number font-serif text-[64px] md:text-[96px] leading-none">2,503,000</p>
+          <div className="right-stats flex-1 p-5 sm:p-8 md:p-[48px]">
+            <div className="text-center mb-6 md:mb-12">
+              <p className="font-sans font-medium text-[12px] md:text-[16px] tracking-[1px] uppercase opacity-40 mb-3 md:mb-4">Online Portals Views</p>
+              <p className="stat-number font-serif text-[48px] sm:text-[64px] md:text-[96px] leading-none">2,503,000</p>
             </div>
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between py-2 border-b border-[#3f3f3f]">
@@ -830,10 +839,10 @@ export default function Page() {
       </section>
 
       {/* Us vs Market Section */}
-      <section ref={comparisonRef} className="bg-[#2b2b2b] w-full py-16 md:py-[128px] text-white overflow-hidden">
-        <div className="max-w-[1440px] mx-auto px-8 md:px-[96px] flex flex-col items-center">
-          <h2 className="comparison-title font-serif text-[48px] md:text-[80px] text-[#f4f1ea] mb-8 text-center leading-[1.1] tracking-[-3%]">Us vs. The Market</h2>
-          <p className="comparison-desc text-center font-sans font-light text-[14px] md:text-[16px] max-w-[800px] mb-12 md:mb-16 opacity-80">
+      <section ref={comparisonRef} className="bg-[#2b2b2b] w-full py-12 md:py-[128px] text-white overflow-hidden">
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 md:px-[96px] flex flex-col items-center">
+          <h2 className="comparison-title font-serif text-[32px] sm:text-[48px] md:text-[80px] text-[#f4f1ea] mb-4 md:mb-8 text-center leading-[1.1] tracking-[-3%]">Us vs. The Market</h2>
+          <p className="comparison-desc text-center font-sans font-light text-[13px] md:text-[16px] max-w-[800px] mb-8 md:mb-16 opacity-80 px-2">
             This means 95% of our listings sell <span className="font-bold">without</span> any price reduction, so you can expect us to achieve the price we set together. In the broader market, nearly one third of homes end up reducing their price before selling.
           </p>
 
@@ -887,58 +896,58 @@ export default function Page() {
 
             {/* Gillette Group Column - Orange */}
             <div className="gillette-column flex flex-col items-center bg-[#ff5825] text-white rounded-[11px] w-full lg:w-[372px] shadow-2xl relative z-20 lg:scale-105">
-              <h4 className="font-sans font-medium uppercase tracking-widest text-[16px] h-[72px] flex items-center">Gillette Group</h4>
+              <h4 className="font-sans font-medium uppercase tracking-widest text-[12px] md:text-[16px] h-[56px] md:h-[72px] flex items-center">Gillette Group</h4>
               <div className="w-full border-t border-white/50" />
               <div className="flex flex-col w-full text-center">
-                <div className="flex flex-col items-center justify-center h-[150px]">
-                  <span className="font-serif text-[64px] leading-none">{"<5%"}</span>
+                <div className="flex flex-col items-center justify-center h-[100px] md:h-[150px]">
+                  <span className="font-serif text-[40px] md:text-[64px] leading-none">{"<5%"}</span>
                 </div>
                 <div className="w-full border-t border-white/50" />
-                <div className="flex flex-col items-center justify-center h-[150px]">
-                  <span className="font-serif text-[64px] leading-none">-1.2%</span>
+                <div className="flex flex-col items-center justify-center h-[100px] md:h-[150px]">
+                  <span className="font-serif text-[40px] md:text-[64px] leading-none">-1.2%</span>
                 </div>
                 <div className="w-full border-t border-white/50" />
-                <div className="flex flex-col items-center justify-center h-[150px]">
-                  <span className="font-serif text-[64px] leading-none">100.5%</span>
+                <div className="flex flex-col items-center justify-center h-[100px] md:h-[150px]">
+                  <span className="font-serif text-[40px] md:text-[64px] leading-none">100.5%</span>
                 </div>
                 <div className="w-full border-t border-white/50" />
-                <div className="flex flex-col items-center justify-center h-[150px]">
-                  <span className="font-serif text-[64px] leading-none">12</span>
-                  <span className="font-sans font-light text-[16px] mt-1">Days</span>
+                <div className="flex flex-col items-center justify-center h-[100px] md:h-[150px]">
+                  <span className="font-serif text-[40px] md:text-[64px] leading-none">12</span>
+                  <span className="font-sans font-light text-[14px] md:text-[16px] mt-1">Days</span>
                 </div>
                 <div className="w-full border-t border-white/50" />
-                <div className="flex flex-col items-center justify-center h-[150px]">
-                  <span className="font-serif text-[64px] leading-none">3,200</span>
-                  <span className="font-sans font-light text-[16px] mt-1">Views</span>
+                <div className="flex flex-col items-center justify-center h-[100px] md:h-[150px]">
+                  <span className="font-serif text-[40px] md:text-[64px] leading-none">3,200</span>
+                  <span className="font-sans font-light text-[14px] md:text-[16px] mt-1">Views</span>
                 </div>
               </div>
             </div>
 
             {/* Market Average Column */}
             <div className="market-column flex flex-col items-center w-full lg:w-[372px] text-[#acacac]">
-              <h4 className="font-sans font-medium uppercase tracking-widest text-[16px] h-[72px] flex items-center">Market Average</h4>
+              <h4 className="font-sans font-medium uppercase tracking-widest text-[12px] md:text-[16px] h-[56px] md:h-[72px] flex items-center">Market Average</h4>
               <div className="w-full border-t border-[#484848]" />
               <div className="flex flex-col w-full text-center">
-                <div className="flex flex-col items-center justify-center h-[150px]">
-                  <span className="font-serif text-[64px] leading-none">~20%</span>
+                <div className="flex flex-col items-center justify-center h-[100px] md:h-[150px]">
+                  <span className="font-serif text-[40px] md:text-[64px] leading-none">~20%</span>
                 </div>
                 <div className="w-full border-t border-[#484848]" />
-                <div className="flex flex-col items-center justify-center h-[150px]">
-                  <span className="font-serif text-[64px] leading-none">-4.2%</span>
+                <div className="flex flex-col items-center justify-center h-[100px] md:h-[150px]">
+                  <span className="font-serif text-[40px] md:text-[64px] leading-none">-4.2%</span>
                 </div>
                 <div className="w-full border-t border-[#484848]" />
-                <div className="flex flex-col items-center justify-center h-[150px]">
-                  <span className="font-serif text-[64px] leading-none">97%</span>
+                <div className="flex flex-col items-center justify-center h-[100px] md:h-[150px]">
+                  <span className="font-serif text-[40px] md:text-[64px] leading-none">97%</span>
                 </div>
                 <div className="w-full border-t border-[#484848]" />
-                <div className="flex flex-col items-center justify-center h-[150px]">
-                  <span className="font-serif text-[64px] leading-none">45</span>
-                  <span className="font-sans font-light text-[16px] mt-1">Days</span>
+                <div className="flex flex-col items-center justify-center h-[100px] md:h-[150px]">
+                  <span className="font-serif text-[40px] md:text-[64px] leading-none">45</span>
+                  <span className="font-sans font-light text-[14px] md:text-[16px] mt-1">Days</span>
                 </div>
                 <div className="w-full border-t border-[#484848]" />
-                <div className="flex flex-col items-center justify-center h-[150px]">
-                  <span className="font-serif text-[64px] leading-none">400</span>
-                  <span className="font-sans font-light text-[16px] mt-1">Views</span>
+                <div className="flex flex-col items-center justify-center h-[100px] md:h-[150px]">
+                  <span className="font-serif text-[40px] md:text-[64px] leading-none">400</span>
+                  <span className="font-sans font-light text-[14px] md:text-[16px] mt-1">Views</span>
                 </div>
               </div>
             </div>
@@ -947,28 +956,28 @@ export default function Page() {
       </section>
 
       {/* Footer Section */}
-      <section ref={footerRef} className="w-full max-w-[1440px] px-8 md:px-[96px] py-16 md:py-[80px] flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-        <div className="footer-content flex-1 flex flex-col gap-8 text-center lg:text-left">
-          <h2 className="font-serif text-[48px] md:text-[72px] lg:text-[96px] text-[#2b2b2b] leading-tight">Shannon Gillette Team</h2>
-          <div className="w-[100px] h-px bg-[#2b2b2b] mx-auto lg:mx-0" />
-          <p className="font-sans font-light text-[18px] md:text-[20px] text-[#2b2b2b] leading-relaxed max-w-[450px] mx-auto lg:mx-0">
+      <section ref={footerRef} className="w-full max-w-[1440px] px-4 sm:px-8 md:px-[96px] py-12 md:py-[80px] flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+        <div className="footer-content flex-1 flex flex-col gap-6 md:gap-8 text-center lg:text-left">
+          <h2 className="font-serif text-[36px] sm:text-[48px] md:text-[72px] lg:text-[96px] text-[#2b2b2b] leading-tight">Shannon Gillette Team</h2>
+          <div className="w-[80px] md:w-[100px] h-px bg-[#2b2b2b] mx-auto lg:mx-0" />
+          <p className="font-sans font-light text-[16px] md:text-[20px] text-[#2b2b2b] leading-relaxed max-w-[450px] mx-auto lg:mx-0">
             Experience marketing that&apos;s transparent, data-driven, and gets your home in front of serious buyers. Every campaign tracked. Every view documented. Every effort proven.
           </p>
-          <button className="bg-[#2b2b2b] text-white px-8 py-4 font-sans font-medium uppercase tracking-widest text-sm w-fit hover:bg-black hover:scale-105 transition-all duration-300 mx-auto lg:mx-0">
+          <button className="bg-[#2b2b2b] text-white px-6 md:px-8 py-3 md:py-4 font-sans font-medium uppercase tracking-widest text-xs md:text-sm w-fit hover:bg-black hover:scale-105 transition-all duration-300 mx-auto lg:mx-0">
             Let&apos;s Make Your Home Shine
           </button>
         </div>
-        <div className="footer-image w-full lg:w-[600px] h-[400px] md:h-[500px] lg:h-[650px] relative rounded-[12px] overflow-hidden">
+        <div className="footer-image w-full lg:w-[600px] h-[300px] sm:h-[400px] md:h-[500px] lg:h-[650px] relative rounded-[12px] overflow-hidden">
           <img src={imgRectangle2} alt="Profile" className="absolute inset-0 w-full h-full object-cover" />
         </div>
       </section>
 
       {/* Copyright */}
-      <div className="w-full py-12 md:py-16 flex flex-col items-center gap-6">
-        <div className="w-[100px] md:w-[120px] h-[60px] md:h-[80px] relative">
+      <div className="w-full py-8 md:py-16 flex flex-col items-center gap-4 md:gap-6">
+        <div className="w-[80px] md:w-[120px] h-[50px] md:h-[80px] relative">
           <img src={imgQvrn6Gdeq84Zgkw0Rlji1} alt="Logo" className="w-full h-full object-contain" />
         </div>
-        <p className="font-sans font-normal text-[12px] md:text-[14px] uppercase tracking-widest text-[#2b2b2b] opacity-50 text-center">
+        <p className="font-sans font-normal text-[10px] md:text-[14px] uppercase tracking-widest text-[#2b2b2b] opacity-50 text-center px-4">
           All rights reserved. Gillette Group
         </p>
       </div>

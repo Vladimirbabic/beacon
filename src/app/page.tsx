@@ -373,7 +373,7 @@ function HeroSection({ heroRef, cardsRef }: { heroRef: React.RefObject<HTMLDivEl
   return (
     <div ref={heroRef} className="w-full relative">
       {/* Left-aligned title and subtitle with inline arrows */}
-      <div className="flex flex-col gap-4 md:gap-6 px-4 sm:px-8 md:px-24 pt-8 md:pt-16 pb-6 md:pb-12 items-start text-left max-w-[1440px] mx-auto">
+      <div className="flex flex-col gap-4 md:gap-6 px-4 sm:px-8 md:px-24 pt-8 md:pt-16 pb-16 md:pb-32 items-start text-left max-w-[1440px] mx-auto">
         <h1 className="hero-title font-serif text-[32px] sm:text-[40px] md:text-[64px] lg:text-[80px] text-[#2b2b2b] leading-[1.1] tracking-[-1px] md:tracking-[-2.4px] max-w-[900px]">
           Our homes have been seen 235,000 buyers.
         </h1>

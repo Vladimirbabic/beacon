@@ -205,6 +205,96 @@ function EmbedCard({ type, address }: { type: "zillow" | "reels" | "linkedin"; a
   );
 }
 
+// Mobile Campaigns Carousel with GSAP auto-scroll
+function MobileCampaignsCarousel() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const tweenRef = useRef<gsap.core.Tween | null>(null);
+
+  const campaigns = [
+    { type: "zillow" as const, address: "96 Washington Avenue, Garden City, NY 11530" },
+    { type: "reels" as const, address: "96 Washington Avenue, Garden City, NY 11530" },
+    { type: "linkedin" as const, address: "96 Washington Avenue, Garden City, NY 11530" },
+    { type: "zillow" as const, address: "142 Oak Street, Mineola, NY 11501" },
+    { type: "reels" as const, address: "78 Maple Drive, Westbury, NY 11590" },
+    { type: "linkedin" as const, address: "55 Elm Road, Roslyn, NY 11576" },
+  ];
+
+  const cardWidth = 280;
+  const gap = 16;
+  const totalWidth = campaigns.length * (cardWidth + gap);
+
+  // Duplicate for seamless loop
+  const infiniteCampaigns = [...campaigns, ...campaigns];
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    gsap.set(container, { x: 0 });
+
+    tweenRef.current = gsap.to(container, {
+      x: -totalWidth,
+      duration: 25,
+      ease: "none",
+      repeat: -1,
+      modifiers: {
+        x: gsap.utils.unitize((x) => parseFloat(x) % totalWidth)
+      }
+    });
+
+    return () => {
+      tweenRef.current?.kill();
+    };
+  }, [totalWidth]);
+
+  const handleMouseEnter = useCallback(() => {
+    if (tweenRef.current) {
+      gsap.to(tweenRef.current, { timeScale: 0, duration: 0.5, ease: "power2.out" });
+    }
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (tweenRef.current) {
+      gsap.to(tweenRef.current, { timeScale: 1, duration: 0.5, ease: "power2.in" });
+    }
+  }, []);
+
+  // Touch handlers for mobile
+  const handleTouchStart = useCallback(() => {
+    if (tweenRef.current) {
+      gsap.to(tweenRef.current, { timeScale: 0, duration: 0.3, ease: "power2.out" });
+    }
+  }, []);
+
+  const handleTouchEnd = useCallback(() => {
+    if (tweenRef.current) {
+      gsap.to(tweenRef.current, { timeScale: 1, duration: 0.5, ease: "power2.in" });
+    }
+  }, []);
+
+  return (
+    <div
+      className="md:hidden w-full overflow-hidden pb-8"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      <div
+        ref={containerRef}
+        className="flex pl-4 pr-8"
+        style={{ gap: `${gap}px` }}
+      >
+        {infiniteCampaigns.map((campaign, index) => (
+          <div key={index} className="w-[280px] shrink-0">
+            <EmbedCard type={campaign.type} address={campaign.address} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // Hero Section with endless auto-scrolling carousel using GSAP
 function HeroSection({ heroRef, cardsRef }: { heroRef: React.RefObject<HTMLDivElement | null>; cardsRef: React.RefObject<HTMLDivElement | null> }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -775,29 +865,35 @@ export default function Page() {
           </div>
         </div>
 
-        {/* Embedded Cards Section */}
-        <div ref={embedsSectionRef} className="w-full max-w-[1248px] mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Column 1 */}
-          <div className="flex flex-col gap-6">
-            <EmbedCard type="zillow" address="96 Washington Avenue, Garden City, NY 11530" />
-            <EmbedCard type="reels" address="96 Washington Avenue, Garden City, NY 11530" />
-          </div>
+        {/* Embedded Cards Section - Mobile Carousel / Desktop Grid */}
+        <div ref={embedsSectionRef} className="w-full max-w-[1248px] mt-16 mb-8 md:mb-0">
+          {/* Mobile Auto-scrolling Carousel */}
+          <MobileCampaignsCarousel />
 
-          {/* Column 2 */}
-          <div className="flex flex-col gap-6">
-            <EmbedCard type="linkedin" address="96 Washington Avenue, Garden City, NY 11530" />
-            <EmbedCard type="zillow" address="96 Washington Avenue, Garden City, NY 11530" />
-          </div>
+          {/* Desktop Grid */}
+          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Column 1 */}
+            <div className="flex flex-col gap-6">
+              <EmbedCard type="zillow" address="96 Washington Avenue, Garden City, NY 11530" />
+              <EmbedCard type="reels" address="96 Washington Avenue, Garden City, NY 11530" />
+            </div>
 
-          {/* Column 3 */}
-          <div className="flex flex-col gap-6">
-            <EmbedCard type="reels" address="96 Washington Avenue, Garden City, NY 11530" />
-            <EmbedCard type="linkedin" address="96 Washington Avenue, Garden City, NY 11530" />
+            {/* Column 2 */}
+            <div className="flex flex-col gap-6">
+              <EmbedCard type="linkedin" address="96 Washington Avenue, Garden City, NY 11530" />
+              <EmbedCard type="zillow" address="96 Washington Avenue, Garden City, NY 11530" />
+            </div>
+
+            {/* Column 3 */}
+            <div className="flex flex-col gap-6">
+              <EmbedCard type="reels" address="96 Washington Avenue, Garden City, NY 11530" />
+              <EmbedCard type="linkedin" address="96 Washington Avenue, Garden City, NY 11530" />
+            </div>
           </div>
         </div>
 
-        {/* Fade gradient at bottom - positioned at section edge */}
-        <div className="absolute bottom-0 left-0 right-0 h-[350px] bg-gradient-to-t from-[#2b2b2b] via-[#2b2b2b] via-40% to-transparent pointer-events-none" />
+        {/* Fade gradient at bottom - positioned at section edge, smaller on mobile */}
+        <div className="absolute bottom-0 left-0 right-0 h-[80px] md:h-[350px] bg-gradient-to-t from-[#2b2b2b] via-[#2b2b2b] via-40% to-transparent pointer-events-none" />
       </section>
 
       {/* Stats Section Light */}
